@@ -42,11 +42,11 @@ commit credentials or other secrets.
 
 ## Data and access
 
-This repository contains meeting audio, scripts, derived audio, and clinical
-guideline documents. Access and reuse should follow the applicable research
-approvals, data-sharing agreements, and document licensing terms. Keep the
-repository private unless all materials are explicitly cleared for wider
-distribution.
+The source project includes meeting audio, scripts, derived audio, and clinical
+guideline documents; the audio dataset is not part of this GitHub repository.
+Access and reuse should follow the applicable research approvals, data-sharing
+agreements, and document licensing terms. Keep the repository private unless
+all materials are explicitly cleared for wider distribution.
 
 ## GitHub large-file note
 
