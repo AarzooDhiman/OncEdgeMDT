@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH -J optuna-whisper
+#SBATCH -n 1
+#SBATCH --ntasks-per-node 1
+#SBATCH -D /home/896166/codes/whisper
+#SBATCH -o optuna_whisper_batch/%N.%j_whisper_oot.out
+#SBATCH -e optuna_whisper_batch/%N.%j_whisper_opt.err
+#SBATCH --gres=gpu
+#SBATCH -p gpu
+#SBATCH -t 5-00:00:00
+#SBATCH --mail-user=a.dhiman@hull.ac.uk
+#SBATCH --mail-type=BEGIN,END,FAIL
+
+echo $SLURM_JOB_NODELIST
+
+module purge
+module add ffmpeg
+module load gcc/5.2.0
+module load  python/anaconda/20220712/3.9
+module load cuda/11.5.0
+
+source activate /home/896166/.conda/envs/whisper-conda
+export PATH=/home/896166/.conda/envs/whisper-conda/bin:${PATH}
+
+python optuna_whisper.py --case 1
+
