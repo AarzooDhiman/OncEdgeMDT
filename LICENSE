@@ -1,0 +1,29 @@
+Copyright (c) 2025 University of Hull. All rights reserved.
+
+PROPRIETARY LICENCE NOTICE
+
+This repository, including its source code, notebooks, scripts, data, audio
+recordings, transcripts and documentation (together, the "Materials"), is the
+property of the University of Hull ("the University"). The Materials are made
+visible for the purposes of peer review and verification of the associated
+research only.
+
+No licence or right is granted to any person to use, copy, reproduce, modify,
+merge, publish, distribute, sublicense, sell, host, or create derivative works
+from the Materials, in whole or in part, or to use them to train or fine-tune
+any machine learning model, without the prior written permission of the
+University of Hull.
+
+Any use of the Materials beyond reading them requires a separate written
+agreement with the University. Requests should be sent to the corresponding
+author (a.dhiman@hull.ac.uk) or the University's research and innovation office.
+
+Third-party materials included in this repository (including NICE guidelines
+in RAG/NICE_guidelines/ and the sound clips in data/augmentation/noises/) are
+not owned by the University, are not covered by this notice, and remain subject
+to their respective owners' terms.
+
+THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. THEY ARE RESEARCH MATERIALS AND ARE NOT A MEDICAL DEVICE OR INTENDED
+FOR CLINICAL USE. TO THE FULLEST EXTENT PERMITTED BY LAW, THE UNIVERSITY SHALL
+NOT BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THEIR USE.

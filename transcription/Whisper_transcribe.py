@@ -16,6 +16,16 @@ import torchaudio
 
 from tqdm import tqdm
 
+# Paths are relative to the repository root, so the script can be run from anywhere.
+# DATA: download the dataset from Figshare (https://figshare.com/s/27501bb3e1096f720c55)
+# and extract it into the repository's data/ folder (data/tier1, data/tier2, data/tier3).
+from pathlib import Path
+REPO_ROOT = Path(__file__).resolve().parents[1]
+AUDIO_DIR = REPO_ROOT / 'data' / 'tier3'  # augmented audio, one folder per case (Figshare)
+SCRIPT_DIR = REPO_ROOT / 'data' / 'tier2' / 'scripts'  # reference transcripts (Figshare)
+OUT_DIR = REPO_ROOT / 'outputs' / 'Whisper_augmented'
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -72,14 +82,14 @@ class MyAUGDataset(torch.utils.data.Dataset):
 
 
 
-scripts = glob.glob('simulated_script/MDT_meeting_full_case*')
+scripts = glob.glob(str(SCRIPT_DIR / 'MDT_meeting_full_case*.txt'))
 
 for script in scripts[:1]:
     print ('============================')
     print (script)
     path = script.split('/')[-1].replace('.txt', '')
     
-    dataset = MyAUGDataset(audio=f"augmented_audio/{path}",  scripts= "simulated_script", file_name=path+str('.txt'),device=DEVICE)
+    dataset = MyAUGDataset(audio=str(AUDIO_DIR / path),  scripts= str(SCRIPT_DIR), file_name=path+str('.txt'),device=DEVICE)
 
     print("Total samples:", len(dataset))
 
@@ -139,4 +149,4 @@ for script in scripts[:1]:
     print("Average WER: {:.2f}%".format(data["WIL"].mean() * 100))
     
     
-    data.to_csv(f'outputs/Whisper_augmented/with_timestampstranscriptions_{path}.csv')
+    data.to_csv(OUT_DIR / f'with_timestampstranscriptions_{path}.csv')

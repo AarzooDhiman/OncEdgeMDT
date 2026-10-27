@@ -11,6 +11,19 @@ from langchain_community.vectorstores.faiss import FAISS
 
 from langchain_ollama import OllamaEmbeddings
 
+# Paths are relative to the repository root, so the script can be run from anywhere.
+from pathlib import Path as _P
+REPO_ROOT = _P(__file__).resolve().parents[1]
+RAG_DIR = REPO_ROOT / 'RAG'
+# Case transcripts (.txt, one per case): place them in RAG/case_separated/ - use the outputs of
+# optimal_transcription/ or the data from Figshare (https://figshare.com/s/27501bb3e1096f720c55).
+CASE_DIR = RAG_DIR / 'case_separated'
+LLM_DIR = RAG_DIR / 'llm_store'  # GGUF model weights are downloaded here from Hugging Face
+VECTOR_STORE = str(RAG_DIR / 'vector_store' / 'faiss_nomic_ollama')  # created by create_vector_store.py
+OUT_DIR = REPO_ROOT / 'outputs' / 'medgemma'
+(OUT_DIR / 'ollama_retrieved').mkdir(parents=True, exist_ok=True)
+(OUT_DIR / 'rag_on_trans_prompt6').mkdir(parents=True, exist_ok=True)
+
 ####loading from stored retreived documents 
 '''def load_retrieved(filepath):
     results = []
@@ -29,7 +42,7 @@ from langchain_ollama import OllamaEmbeddings
     return ret_question, results
     
     
-retrieved_ques, retrieved_docs = load_retrieved('/home/data/LLM/LLM_outputs/medgemma/real_case/medgemma_8kxl/ollama_retrieved/test.json')
+retrieved_ques, retrieved_docs = load_retrieved(str(OUT_DIR / 'ollama_retrieved' / 'test.json'))
 
 print (retrieved_docs[0][0].page_content)'''
 
@@ -37,7 +50,7 @@ print (retrieved_docs[0][0].page_content)'''
 
 
 #####reading transcription data
-folder = Path("/home/data/LLM/case_separated/case_desc")
+folder = CASE_DIR / 'case_desc'
 #folder = Path("/home/data/LLM/real_case_groundtruth/treatment_prediction/case_desc_gt/")
 
 
@@ -58,7 +71,7 @@ for txt_file in folder.glob("*.txt"):
 embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
 vectorstore = FAISS.load_local(
-    '/home/data/LLM/vector_store/faiss_nomic_ollama',
+    VECTOR_STORE,
     embeddings,
     allow_dangerous_deserialization=True
 )
@@ -82,7 +95,7 @@ retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
 model_name = "unsloth/medgemma-27b-text-it-GGUF"  
 model_file= "medgemma-27b-text-it-UD-Q8_K_XL.gguf"
 
-local_path = '/home/data/LLM/llm_store/medgemma-27b-text-it-UD-Q8_K_XL.gguf'
+local_path = str(LLM_DIR / 'medgemma-27b-text-it-UD-Q8_K_XL.gguf')
 
 
 if not os.path.exists(local_path):
@@ -90,7 +103,7 @@ if not os.path.exists(local_path):
 	local_path = hf_hub_download(
         repo_id=model_name,
         filename=model_file,
-        local_dir='/home/data/LLM/llm_store/',
+        local_dir=str(LLM_DIR),
         local_dir_use_symlinks=False)
 
 
@@ -180,7 +193,7 @@ def save_retrieved(question, docs,k):
         ]
         }
 
-	with open(f'/home/data/LLM/LLM_outputs/medgemma/real_case/medgemma_8kxl/ollama_retrieved/transcr{k}.json' , "w") as f:
+	with open(OUT_DIR / 'ollama_retrieved' / f'transcr{k}.json' , "w") as f:
         	f.write(json.dumps(data) + "\n")
         	
 	
@@ -217,7 +230,7 @@ for k in list(texts.keys()):
 	#print(answer)
 
 
-	with open(f'/home/data/LLM/LLM_outputs/medgemma/real_case/medgemma_8kxl/rag_on_trans_prompt6/{k}.txt' , 'w') as f:
+	with open(OUT_DIR / 'rag_on_trans_prompt6' / f'{k}.txt' , 'w') as f:
 		f.write(answer)
 		
 	

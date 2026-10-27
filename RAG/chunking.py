@@ -6,10 +6,17 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 #import pdfplumber
 from collections import defaultdict
 
+# Paths are relative to the repository root, so the script can be run from anywhere.
+from pathlib import Path as _P
+REPO_ROOT = _P(__file__).resolve().parents[1]
+RAG_DIR = REPO_ROOT / 'RAG'
+CHUNK_DIR = RAG_DIR / 'chunks'
+CHUNK_DIR.mkdir(parents=True, exist_ok=True)
+
 paths = [
-    "/home/data/LLM/NICE_guides/ng101.pdf",
-    #"/home/data/LLM/NICE_guides/cg164.pdf",
-    #"/home/data/LLM/NICE_guides/cg81.pdf"
+    str(RAG_DIR / 'NICE_guidelines' / 'ng101.pdf'),
+    #str(RAG_DIR / 'NICE_guidelines' / 'cg164.pdf'),
+    #str(RAG_DIR / 'NICE_guidelines' / 'cg81.pdf')
 ]
 
 
@@ -336,7 +343,7 @@ for doc in structured_chunks:
         "content": doc.page_content
     })
 
-with open("/home/data/LLM/chunks/ng101_chunks.json", "w", encoding="utf-8") as f:
+with open(CHUNK_DIR / "ng101_chunks.json", "w", encoding="utf-8") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
 
 print("done")

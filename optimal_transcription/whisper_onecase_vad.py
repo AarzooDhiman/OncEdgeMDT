@@ -19,6 +19,15 @@ from silero_vad import load_silero_vad, get_speech_timestamps, read_audio
 import torchaudio
 from speechmos import dnsmos
 import librosa
+
+# Paths are relative to the repository root, so the script can be run from anywhere.
+# DATA: download the dataset from Figshare (https://figshare.com/s/27501bb3e1096f720c55)
+# and extract it into the repository's data/ folder (data/tier1, data/tier2, data/tier3).
+from pathlib import Path
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = REPO_ROOT / 'data'
+OUT_DIR = REPO_ROOT / 'outputs' / 'optimal_transcription'
+OUT_DIR.mkdir(parents=True, exist_ok=True)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("Using device:", device)
 
@@ -43,7 +52,8 @@ os.environ['MKL_NUM_THREADS'] = str(num_cores)
 torch.set_num_threads(int(num_cores))
 #model = whisper.load_model("large-v3", device=device)
 
-audio_file = 'real_case/mdt_case2.wav'
+# DATA (Figshare): data/tier1/mdt_case2.wav
+audio_file = str(DATA_DIR / 'tier1' / 'mdt_case2.wav')
 
 
 
@@ -269,7 +279,7 @@ if audio_silences is None or len(audio_silences) ==0:
     print ('no silence detected')
     trimmed_audio_path = audio_file
 else:
-    trim_audio, trimmed_audio_path= remove_silence(audio_file, audio_silences, 2, 'real_case/case1_anonym_silence_removed2.wav')             
+    trim_audio, trimmed_audio_path= remove_silence(audio_file, audio_silences, 2, str(OUT_DIR / 'case1_anonym_silence_removed2.wav'))             
 
 temperature=0.7596350092541306
 beam_size=2
@@ -304,6 +314,6 @@ for th in [-1]: #keep th =6 for using tuned without noise threshold, keep th=-1 
 
     #print (result["text"])
 
-    with open(f'real_case/whisper_case2{th}.txt', 'w') as f:
+    with open(OUT_DIR / f'whisper_case2{th}.txt', 'w') as f:
         f.write(result['text'])
 

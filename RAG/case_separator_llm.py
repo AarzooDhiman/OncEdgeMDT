@@ -3,9 +3,20 @@ from llama_cpp import Llama
 import re
 from pathlib import Path
 
+# Paths are relative to the repository root, so the script can be run from anywhere.
+from pathlib import Path as _P
+REPO_ROOT = _P(__file__).resolve().parents[1]
+RAG_DIR = REPO_ROOT / 'RAG'
+# Case transcripts (.txt, one per case): place them in RAG/case_separated/ - use the outputs of
+# optimal_transcription/ or the data from Figshare (https://figshare.com/s/27501bb3e1096f720c55).
+CASE_DIR = RAG_DIR / 'case_separated'
+LLM_DIR = RAG_DIR / 'llm_store'  # GGUF model weights are downloaded here from Hugging Face
+OUT_DIR = REPO_ROOT / 'outputs' / 'medgemma' / 'case_separator'
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+
 
 #####reading data
-folder = Path("/home/data/LLM/case_separated/")
+folder = CASE_DIR
 
 
 texts = {}
@@ -33,7 +44,7 @@ model_file= "medgemma-27b-text-it-Q4_K_S.gguf"
 
 
 
-model_path = hf_hub_download(model_name, filename=model_file, local_dir = '/home/data/LLM/llm_store/', local_dir_use_symlinks=False)
+model_path = hf_hub_download(model_name, filename=model_file, local_dir = str(LLM_DIR), local_dir_use_symlinks=False)
 print ("My model path: ", model_path)
 
 llm= Llama(model_path=model_path, n_gpu_layers= -1, n_ctx=4096)
@@ -103,6 +114,6 @@ for k in list(texts.keys()):
 
 	print ('\n\n\n', response)
 
-	with open(f'/home/data/LLM/LLM_outputs/medgemma/real_case/prompt_2/{k}.txt' , 'w') as f:
+	with open(OUT_DIR / f'{k}.txt' , 'w') as f:
 		f.write(response)
 

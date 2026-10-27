@@ -1,5 +1,15 @@
 import whisper
 import os
+
+# Paths are relative to the repository root, so the script can be run from anywhere.
+# DATA: download the dataset from Figshare (https://figshare.com/s/27501bb3e1096f720c55)
+# and extract it into the repository's data/ folder (data/tier1, data/tier2, data/tier3).
+from pathlib import Path
+REPO_ROOT = Path(__file__).resolve().parents[1]
+AUDIO_DIR = REPO_ROOT / 'data' / 'tier3'  # augmented audio, one folder per case (Figshare)
+SCRIPT_DIR = REPO_ROOT / 'data' / 'tier2' / 'scripts'  # reference transcripts (Figshare)
+OUT_DIR = REPO_ROOT / 'outputs' / 'optuna_whisper'
+OUT_DIR.mkdir(parents=True, exist_ok=True)
 import numpy as np
 import json
 import glob
@@ -96,16 +106,16 @@ def objective(trial):
     
         
     # Pick a small number of samples per trial for speed
-    scripts = glob.glob(f'augmented_audio/MDT_meeting_full_case*')  # <-- EDIT: use more for thorough tuning
+    scripts = glob.glob(str(AUDIO_DIR / 'MDT_meeting_full_case*'))  # <-- EDIT: use more for thorough tuning
     print (len(scripts))
     all_wers = []
 
     for idx, script in enumerate(scripts):
-        case = script.split("/")[1]
+        case = os.path.basename(script)
         audio_path = glob.glob(script+'/*')
         print (case)
         
-        with open(f"simulated_script/{case}.txt") as f:
+        with open(SCRIPT_DIR / f'{case}.txt') as f:
             ref_text = f.read()
         
         ref_clean = normalizer(ref_text)
@@ -160,7 +170,7 @@ else:
     print ("no completed trials yet. run more!")
 
 
-with open(f'whisper_optuna/best_params_all.txt', 'w') as f:
+with open(OUT_DIR / 'best_params_all.txt', 'w') as f:
     f.write(f'working for case ALL \n')
     f.write(json.dumps(study.best_params, indent=2))
     f.write('\n=======\n Best WER: \t ')
@@ -203,17 +213,17 @@ print ('\n\n--------------Running best param on full dataset------------')
 
 best_params = study.best_params
 
-scripts = glob.glob(f'augmented_audio/MDT_meeting_full_case{i}*')
+scripts = glob.glob(str(AUDIO_DIR / f'MDT_meeting_full_case{i}*'))
 all_results = []
 
 for script in tqdm(scripts):
     print("\n============================")
     print(script)
 
-    case = script.split("/")[1]
+    case = os.path.basename(script)
     audio_files = glob.glob(script + '/*')
 
-    with open(f"simulated_script/{case}.txt") as f:
+    with open(SCRIPT_DIR / f'{case}.txt') as f:
         ref_text = f.read()
 
     references = []
@@ -243,7 +253,7 @@ for script in tqdm(scripts):
 
     print(f"Case {case}: Mean WER = {df['WER'].mean():.3f} (+/- {df['WER'].std():.3f})")
 
-    out_path = f"outputs/optuna_whisper_viper/{case}.csv"
+    out_path = str(OUT_DIR / 'viper' / f'{case}.csv')
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     df.to_csv(out_path, index=False)
 
@@ -255,7 +265,7 @@ for script in tqdm(scripts):
 # Save Optuna Study
 # --------------------------------------------------
 study_df = study.trials_dataframe()
-study_df.to_csv(f"outputs/optuna_whisper_results/{case}.csv", index=False)
+study_df.to_csv(str(OUT_DIR / 'results' / f'{case}.csv'), index=False)
 
 print("\nSaved study results as optuna_results.csv")
 '''

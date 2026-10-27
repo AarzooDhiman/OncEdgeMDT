@@ -4,6 +4,14 @@ from pathlib import Path
 import os
 
 import json
+
+# Paths are relative to the repository root, so the script can be run from anywhere.
+from pathlib import Path as _P
+REPO_ROOT = _P(__file__).resolve().parents[1]
+RAG_DIR = REPO_ROOT / 'RAG'
+VECTOR_STORE = str(RAG_DIR / 'vector_store' / 'faiss_nomic_ollama')  # created by create_vector_store.py
+OUT_DIR = REPO_ROOT / 'outputs' / 'ollama_retrieved'
+OUT_DIR.mkdir(parents=True, exist_ok=True)
 ##reading embeddings
 
 from langchain.vectorstores import FAISS
@@ -14,7 +22,7 @@ from langchain_community.embeddings import OllamaEmbeddings
 embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
 vectorstore = FAISS.load_local(
-    '/home/data/LLM/vector_store/faiss_nomic_ollama',
+    VECTOR_STORE,
     embeddings,
     allow_dangerous_deserialization=True
 )
@@ -39,7 +47,7 @@ def save_retrieved(question, docs):
         ]
         }
 
-	with open(f'/home/data/LLM/LLM_outputs/medgemma/real_case/medgemma_8kxl/ollama_retrieved/test2.json' , "w") as f:
+	with open(OUT_DIR / 'test2.json' , "w") as f:
         	f.write(json.dumps(data) + "\n")
         
 

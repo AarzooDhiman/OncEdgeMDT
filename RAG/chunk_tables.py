@@ -1,7 +1,14 @@
 import camelot
 import json
 import os
-file_name  = 'nice_guides/ng101.pdf'
+
+# Paths are relative to the repository root, so the script can be run from anywhere.
+from pathlib import Path as _P
+REPO_ROOT = _P(__file__).resolve().parents[1]
+RAG_DIR = REPO_ROOT / 'RAG'
+CHUNK_DIR = RAG_DIR / 'chunks'  # chunk files written by chunking.py
+CHUNK_DIR.mkdir(parents=True, exist_ok=True)
+file_name  = str(RAG_DIR / 'NICE_guidelines' / 'ng101.pdf')
 
 
 '''TABLE_NAME = "Table 8 Benefits and risks of radiotherapy compared with no radiotherapy in the low-risk group described in recommendation 1.13.7"
@@ -48,7 +55,7 @@ for table_index, table in enumerate(tables):
 
             all_chunks.append(chunk)
 # Save to JSON
-OUTPUT_PATH = "chunking/ng101_table8_chunks.json"
+OUTPUT_PATH = str(CHUNK_DIR / "ng101_table8_chunks.json")
 
 with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
     json.dump(all_chunks, f, indent=2, ensure_ascii=False)
@@ -58,8 +65,8 @@ print(f"Saved {len(all_chunks)} chunks to {OUTPUT_PATH}")'''
 import os
 import json
 
-INPUT_FOLDER = "chunking/"
-OUTPUT_FILE = "merged_output.json"
+INPUT_FOLDER = str(CHUNK_DIR)
+OUTPUT_FILE = str(RAG_DIR / "merged_output.json")
 
 merged_data = []
 

@@ -1,11 +1,17 @@
 import json
+
+# Paths are relative to the repository root, so the script can be run from anywhere.
+from pathlib import Path as _P
+REPO_ROOT = _P(__file__).resolve().parents[1]
+RAG_DIR = REPO_ROOT / 'RAG'
+VECTOR_STORE = str(RAG_DIR / 'vector_store' / 'faiss_nomic_ollama')  # created by create_vector_store.py
 from langchain_core.documents import Document
 #from langchain.embeddings import SentenceTransformerEmbeddings
 #from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 
-FILE_PATH = "/home/data/LLM/chunks/merged_output.json"
+FILE_PATH = str(RAG_DIR / "merged_output.json")
 
 with open(FILE_PATH, "r", encoding="utf-8") as f:
     data = json.load(f)
@@ -57,6 +63,6 @@ embeddings = OllamaEmbeddings(
 # Build vector store
 vectorstore = FAISS.from_documents(documents, embeddings)
 
-vectorstore.save_local("/home/data/LLM/vector_store/faiss_nomic_ollama")
+vectorstore.save_local(VECTOR_STORE)
 
 
