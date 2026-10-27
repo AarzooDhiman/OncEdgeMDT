@@ -17,12 +17,12 @@ import torchaudio
 from tqdm import tqdm
 
 # Paths are relative to the repository root, so the script can be run from anywhere.
-# DATA: download the dataset from Figshare (https://figshare.com/s/27501bb3e1096f720c55)
-# and extract it into the repository's data/ folder (data/tier1, data/tier2, data/tier3).
+# DATA: the dataset is available through Figshare upon request (see README). Once obtained,
+# extract it into the repository's data/ folder (data/tier1, data/tier2, data/tier3).
 from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
-AUDIO_DIR = REPO_ROOT / 'data' / 'tier3'  # augmented audio, one folder per case (Figshare)
-SCRIPT_DIR = REPO_ROOT / 'data' / 'tier2' / 'scripts'  # reference transcripts (Figshare)
+AUDIO_DIR = REPO_ROOT / 'data' / 'tier3'  # augmented audio, one folder per case (Figshare, on request)
+SCRIPT_DIR = REPO_ROOT / 'data' / 'tier2' / 'scripts'  # reference transcripts (Figshare, on request)
 OUT_DIR = REPO_ROOT / 'outputs' / 'Whisper_augmented'
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 

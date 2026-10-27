@@ -21,8 +21,8 @@ from speechmos import dnsmos
 import librosa
 
 # Paths are relative to the repository root, so the script can be run from anywhere.
-# DATA: download the dataset from Figshare (https://figshare.com/s/27501bb3e1096f720c55)
-# and extract it into the repository's data/ folder (data/tier1, data/tier2, data/tier3).
+# DATA: the dataset is available through Figshare upon request (see README). Once obtained,
+# extract it into the repository's data/ folder (data/tier1, data/tier2, data/tier3).
 from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / 'data'
@@ -52,7 +52,7 @@ os.environ['MKL_NUM_THREADS'] = str(num_cores)
 torch.set_num_threads(int(num_cores))
 #model = whisper.load_model("large-v3", device=device)
 
-# DATA (Figshare): data/tier1/mdt_case2.wav
+# DATA (available on request via Figshare): data/tier1/mdt_case2.wav
 audio_file = str(DATA_DIR / 'tier1' / 'mdt_case2.wav')
 
 

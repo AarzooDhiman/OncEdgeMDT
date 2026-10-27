@@ -8,7 +8,7 @@ from pathlib import Path as _P
 REPO_ROOT = _P(__file__).resolve().parents[1]
 RAG_DIR = REPO_ROOT / 'RAG'
 # Case transcripts (.txt, one per case): place them in RAG/case_separated/ - use the outputs of
-# optimal_transcription/ or the data from Figshare (https://figshare.com/s/27501bb3e1096f720c55).
+# optimal_transcription/ or the data available through Figshare on request.
 CASE_DIR = RAG_DIR / 'case_separated'
 LLM_DIR = RAG_DIR / 'llm_store'  # GGUF model weights are downloaded here from Hugging Face
 OUT_DIR = REPO_ROOT / 'outputs' / 'palmyra-med'

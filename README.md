@@ -4,7 +4,7 @@
 
 © University of Hull. All rights reserved. This repository is proprietary; see [License](#license--contribution-guidelines).
 
-> **Data availability.** The `data/` folder (audio, reference transcripts, augmentation code and noise clips) is **not stored in this GitHub repository** because of its size (approx. 5.1 GB). It is available on Figshare: <https://figshare.com/s/27501bb3e1096f720c55>. Download it and extract it into a `data/` folder at the root of this repository before running the code (see [Dataset Information](#dataset-information)).
+> **Data availability.** The `data/` folder (audio, reference transcripts, augmentation code and noise clips) is **not stored in this GitHub repository** because of its size (approx. 5.1 GB). It is available through Figshare **upon request**; please contact the corresponding author (a.dhiman@hull.ac.uk). Once obtained, extract it into a `data/` folder at the root of this repository before running the code (see [Dataset Information](#dataset-information)).
 
 ## Description
 
@@ -19,9 +19,9 @@ These are research workflows, not a single packaged application. The entry point
 
 ## Dataset Information
 
-The audio dataset (approx. 5.1 GB) is organised in tiers of increasing acoustic difficulty. It consists of ten breast cancer MDT cases (`case1` to `case10`) plus short recordings in `tier1`.
+The audio dataset (approx. 5.1 GB) is organised in tiers of increasing acoustic difficulty. It consists of ten simulated breast cancer MDT cases (`case1` to `case10`) plus two short simulated MDT discussions in `tier1`. No real patient cases or data are used.
 
-**Where to get it.** The data is hosted on Figshare: <https://figshare.com/s/27501bb3e1096f720c55>. It is not included in this GitHub repository. Download it and extract it into the `data/` folder of this repository so the layout matches the table below. The scripts expect these paths.
+**Where to get it.** The data is available through Figshare upon request (contact a.dhiman@hull.ac.uk). It is not included in this GitHub repository. Once obtained, extract it into the `data/` folder of this repository so the layout matches the table below. The scripts expect these paths.
 
 | Path | Contents |
 | --- | --- |
@@ -83,7 +83,7 @@ WhisperX and Parakeet (NeMo) dependencies are installed within their notebooks. 
 
 All scripts use paths relative to the repository root, so they can be run from any directory. Before running:
 
-1. Download the data from Figshare (<https://figshare.com/s/27501bb3e1096f720c55>) into `data/` (see [Dataset Information](#dataset-information)). Scripts that need it say so in a comment at the top.
+1. Obtain the data from the authors (available through Figshare upon request) and extract it into `data/` (see [Dataset Information](#dataset-information)). Scripts that need it say so in a comment at the top.
 2. For the RAG LLM scripts, put the per-case transcript `.txt` files in `RAG/case_separated/`. For `medgemma_with_context.py`, the case descriptions go in `RAG/case_separated/case_desc/`.
 
 Generated files are written inside the repository (and are git-ignored): `outputs/` (transcripts, Optuna results, LLM outputs), `RAG/chunks/`, `RAG/vector_store/` and `RAG/llm_store/` (downloaded GGUF model weights).
@@ -113,7 +113,7 @@ Notebooks in `transcription/` and `data/augmentation/` can be run in Jupyter or 
 
 ## Methodology
 
-1. **Data creation.** Scripted MDT meeting dialogues were converted to speech (Amazon Polly) to produce clean recordings (tier 2) with reference transcripts. <!-- TODO: describe how the tier-1 recordings were obtained -->
+1. **Data creation.** Scripted MDT meeting dialogues were converted to speech (Amazon Polly) to produce clean recordings (tier 2) with reference transcripts, tier 3 audios were augmented tier 2 audios. For tier 1 recordings, members of the Hull University Teaching Hospitals (HUTH) NHS breast MDT, including surgeons, oncologists, radiologists, pathologists, specialist nurses, and MDT coordinators, simulated a discussion of cases while performing their usual MDT roles. All recordings were fully anonymised, preserving authentic clinical terminology, conversational dynamics, and decision-making without providing identifiable patient information. 
 2. **Augmentation.** A grid search over reverberation, background noise at several SNRs, overlapping speech, speed and pitch change, microphone effects and dropout yields 127 variants per case (tier 3).
 3. **ASR benchmarking.** Whisper, WhisperX, Parakeet and AWS Transcribe were evaluated by Word Error Rate (`jiwer`, after Whisper English text normalisation).
 4. **Whisper optimisation.** Optuna searches the decoding parameters; the optimised workflow adds Silero VAD silence removal and noise-adaptive decoding using DNSMOS.
